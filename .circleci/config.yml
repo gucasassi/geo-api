@@ -6,8 +6,12 @@ jobs:
       - image: 'circleci/openjdk:11-jdk'
     steps:
       - checkout
+      - run:
+          name: Analyze on SonarCloud
+          command: mvn verify sonar:sonar
 
 workflows:
   main:
     jobs:
-      - build
+      - build:
+          context: SonarCloud
