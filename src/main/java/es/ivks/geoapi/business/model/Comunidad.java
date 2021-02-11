@@ -1,4 +1,4 @@
-package es.ivks.geoapi.model;
+package es.ivks.geoapi.business.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
