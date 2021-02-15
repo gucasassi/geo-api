@@ -1,6 +1,7 @@
 package es.ivks.geoapi.business.services;
 
 import es.ivks.geoapi.business.model.Comunidad;
+import org.springframework.data.crossstore.ChangeSetPersister;
 
 /**
  * @author: guillem.casas
@@ -8,12 +9,12 @@ import es.ivks.geoapi.business.model.Comunidad;
  **/
 public interface ComunidadService {
 
-    Comunidad getComunidadById(Long id);
+    Comunidad getComunidadById(Long id) throws ChangeSetPersister.NotFoundException;
 
     Comunidad saveComunidad(Comunidad comunidad);
 
-    void updateComunidad(Long id, Comunidad comunidad);
+    void updateComunidad(Long id, Comunidad comunidad) throws ChangeSetPersister.NotFoundException;
 
-    void deleteComunidad(Long id);
+    void deleteComunidad(Long id) throws ChangeSetPersister.NotFoundException;
 
 }

@@ -3,6 +3,7 @@ package es.ivks.geoapi.web.controller;
 import es.ivks.geoapi.business.services.ComunidadService;
 import es.ivks.geoapi.business.model.Comunidad;
 import es.ivks.geoapi.web.response.GeoApiResponse;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class ComunidadController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getComunidadById(@PathVariable("id") Long id){
+    public ResponseEntity getComunidadById(@PathVariable("id") Long id) throws ChangeSetPersister.NotFoundException {
 
         Comunidad comunidad = comunidadService.getComunidadById(id);
         GeoApiResponse apiResponse = GeoApiResponse.builder()
@@ -50,7 +51,7 @@ public class ComunidadController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateComunidad(@PathVariable("id") Long id, @RequestBody Comunidad comunidad){
+    public ResponseEntity updateComunidad(@PathVariable("id") Long id, @RequestBody Comunidad comunidad) throws ChangeSetPersister.NotFoundException {
 
         comunidadService.updateComunidad(id, comunidad);
         return new ResponseEntity(NO_CONTENT);
@@ -58,7 +59,7 @@ public class ComunidadController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteComunidad(@PathVariable("id") Long id){
+    public ResponseEntity deleteComunidad(@PathVariable("id") Long id) throws ChangeSetPersister.NotFoundException {
 
         comunidadService.deleteComunidad(id);
         return new ResponseEntity(NO_CONTENT);
