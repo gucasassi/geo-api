@@ -9,6 +9,8 @@ jobs:
       - run:
           name: Analyze on SonarCloud
           command: mvn verify sonar:sonar
+      - store_artifacts:
+          path:  target
 
 workflows:
   main:
