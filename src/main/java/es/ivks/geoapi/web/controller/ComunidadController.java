@@ -35,7 +35,7 @@ public class ComunidadController {
                                                     .data(comunidad)
                                                     .build();
 
-        return new ResponseEntity(apiResponse, OK);
+        return new ResponseEntity<>(apiResponse, OK);
 
     }
 
@@ -47,7 +47,7 @@ public class ComunidadController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", "/api/v1/comunidades/" + savedComunidad.getId());
 
-        return new ResponseEntity(headers, CREATED);
+        return new ResponseEntity<>(headers, CREATED);
 
     }
 
@@ -55,7 +55,7 @@ public class ComunidadController {
     public ResponseEntity<GeoApiResponse> updateComunidad(@PathVariable("id") Long id, @Validated @RequestBody Comunidad comunidad) throws ChangeSetPersister.NotFoundException {
 
         comunidadService.updateComunidad(id, comunidad);
-        return new ResponseEntity(NO_CONTENT);
+        return new ResponseEntity<>(NO_CONTENT);
 
     }
 
@@ -63,7 +63,7 @@ public class ComunidadController {
     public ResponseEntity<GeoApiResponse> deleteComunidad(@PathVariable("id") Long id) throws ChangeSetPersister.NotFoundException {
 
         comunidadService.deleteComunidad(id);
-        return new ResponseEntity(NO_CONTENT);
+        return new ResponseEntity<>(NO_CONTENT);
 
     }
 

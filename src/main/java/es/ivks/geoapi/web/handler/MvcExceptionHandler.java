@@ -1,10 +1,12 @@
 package es.ivks.geoapi.web.handler;
 
 import es.ivks.geoapi.web.response.GeoApiExceptionResponse;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.crossstore.ChangeSetPersister.*;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -13,8 +15,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.validation.ConstraintViolationException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author: guillem.casas
@@ -27,7 +31,7 @@ public class MvcExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<GeoApiExceptionResponse> methodNotSupportedExceptionHandler(HttpRequestMethodNotSupportedException exception){
 
-        log.error(exception.getMessage());
+        log.warn(exception.getMessage());
 
         GeoApiExceptionResponse apiResponse = GeoApiExceptionResponse.builder()
                                                                         .status(HttpStatus.BAD_REQUEST.name())
@@ -41,7 +45,7 @@ public class MvcExceptionHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<GeoApiExceptionResponse> missinRequestParameterExceptionHandler(MissingServletRequestParameterException exception){
 
-        log.error(exception.getMessage());
+        log.warn(exception.getMessage());
 
         GeoApiExceptionResponse apiResponse = GeoApiExceptionResponse.builder()
                                                                         .status(HttpStatus.BAD_REQUEST.name())
@@ -55,7 +59,6 @@ public class MvcExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<GeoApiExceptionResponse> argumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException exception){
 
-        String errorMethod = exception.getParameter().getMethod().getName();
         String error = String.format("Invalid value for parameter %s", exception.getName());
 
         GeoApiExceptionResponse apiResponse = GeoApiExceptionResponse.builder()
@@ -63,7 +66,8 @@ public class MvcExceptionHandler {
                                                                         .error(error)
                                                                         .build();
 
-        log.error( errorMethod + " - " + error + ": "+ exception.getCause());
+        String logMessage = getMismatchExceptionLogMessage(exception, error);
+        log.warn(logMessage);
 
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
 
@@ -72,13 +76,19 @@ public class MvcExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<GeoApiExceptionResponse> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException exception){
 
-        String error = exception.getFieldError().getDefaultMessage();
+        FieldError fieldError = exception.getFieldError();
+        String error = null;
+
+        if(Objects.nonNull(fieldError)) {
+            error = fieldError.getDefaultMessage();
+        }
+
         GeoApiExceptionResponse apiResponse = GeoApiExceptionResponse.builder()
                                                                         .status(HttpStatus.BAD_REQUEST.name())
                                                                         .error(error)
                                                                         .build();
 
-        return new ResponseEntity(apiResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
 
     }
 
@@ -106,7 +116,29 @@ public class MvcExceptionHandler {
     public ResponseEntity notFoundExceptionHandler(NotFoundException exception){
 
         log.warn("Entity not found");
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
+
+    private String getMismatchExceptionLogMessage(@NonNull MethodArgumentTypeMismatchException exception, String error) {
+
+        Method method = exception.getParameter().getMethod();
+        Class declaringClass = exception.getParameter().getMethod().getDeclaringClass();
+
+        StringBuilder logMessage = new StringBuilder();
+
+        logMessage.append(declaringClass.getSimpleName())
+                  .append(" - ");
+
+        if(Objects.nonNull(method)){
+            logMessage.append(method.getName()).append(": ");
+        }
+
+        logMessage.append(error)
+                  .append(", ")
+                  .append(exception.getCause());
+
+        return String.valueOf(logMessage);
 
     }
 
