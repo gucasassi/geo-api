@@ -31,12 +31,12 @@ public class MvcExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<GeoApiExceptionResponse> methodNotSupportedExceptionHandler(HttpRequestMethodNotSupportedException exception){
 
-        log.warn(exception.getMessage());
-
         GeoApiExceptionResponse apiResponse = GeoApiExceptionResponse.builder()
                                                                         .status(HttpStatus.BAD_REQUEST.name())
                                                                         .error(exception.getMessage())
                                                                         .build();
+
+        log.warn(exception.getMessage());
 
         return new ResponseEntity<>(apiResponse, HttpStatus.METHOD_NOT_ALLOWED);
 
@@ -45,12 +45,12 @@ public class MvcExceptionHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<GeoApiExceptionResponse> missinRequestParameterExceptionHandler(MissingServletRequestParameterException exception){
 
-        log.warn(exception.getMessage());
-
         GeoApiExceptionResponse apiResponse = GeoApiExceptionResponse.builder()
                                                                         .status(HttpStatus.BAD_REQUEST.name())
                                                                         .error(exception.getMessage())
                                                                         .build();
+
+        log.warn(exception.getMessage());
 
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
 
@@ -88,6 +88,8 @@ public class MvcExceptionHandler {
                                                                         .error(error)
                                                                         .build();
 
+        log.warn(error);
+
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
 
     }
@@ -113,7 +115,7 @@ public class MvcExceptionHandler {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity notFoundExceptionHandler(NotFoundException exception){
+    public ResponseEntity<GeoApiExceptionResponse> notFoundExceptionHandler(NotFoundException exception){
 
         log.warn("Entity not found");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -123,20 +125,18 @@ public class MvcExceptionHandler {
     private String getMismatchExceptionLogMessage(@NonNull MethodArgumentTypeMismatchException exception, String error) {
 
         Method method = exception.getParameter().getMethod();
-        Class declaringClass = exception.getParameter().getMethod().getDeclaringClass();
-
         StringBuilder logMessage = new StringBuilder();
 
-        logMessage.append(declaringClass.getSimpleName())
-                  .append(" - ");
+        if(Objects.nonNull(method) && Objects.nonNull(method.getDeclaringClass())){
 
-        if(Objects.nonNull(method)){
-            logMessage.append(method.getName()).append(": ");
+            logMessage.append(method.getDeclaringClass().getSimpleName())
+                      .append(" - ")
+                      .append(method.getName()).append(": ")
+                      .append(error)
+                      .append(", ")
+                      .append(exception.getCause());
+
         }
-
-        logMessage.append(error)
-                  .append(", ")
-                  .append(exception.getCause());
 
         return String.valueOf(logMessage);
 
