@@ -34,7 +34,7 @@ public class MvcExceptionHandler {
                                                                         .error(exception.getMessage())
                                                                         .build();
 
-        return new ResponseEntity(apiResponse, HttpStatus.METHOD_NOT_ALLOWED);
+        return new ResponseEntity<>(apiResponse, HttpStatus.METHOD_NOT_ALLOWED);
 
     }
 
@@ -48,7 +48,7 @@ public class MvcExceptionHandler {
                                                                         .error(exception.getMessage())
                                                                         .build();
 
-        return new ResponseEntity(apiResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
 
     }
 
@@ -65,7 +65,7 @@ public class MvcExceptionHandler {
 
         log.error( errorMethod + " - " + error + ": "+ exception.getCause());
 
-        return new ResponseEntity(apiResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
 
     }
 
@@ -78,23 +78,7 @@ public class MvcExceptionHandler {
                                                                         .error(error)
                                                                         .build();
 
-        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
-
-    }
-
-    private String getArgumentNotValidExceptionError(MethodArgumentNotValidException exception) {
-
-        StringBuilder error = new StringBuilder();
-
-        //error.append(exception.getParameter().getMember().getDeclaringClass().getSimpleName());
-        error.append("El campo ");
-        error.append(exception.getFieldError().getField());
-        error.append(" del objeto ");
-        error.append(exception.getFieldError().getObjectName());
-        error.append(" ");
-        error.append(exception.getFieldError().getDefaultMessage());
-
-        return String.valueOf(error);
+        return new ResponseEntity(apiResponse, HttpStatus.BAD_REQUEST);
 
     }
 

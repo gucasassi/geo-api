@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @version: 12/02/2021
 **/
 @WebMvcTest(ComunidadController.class)
-public class ComunidadControllerTest {
+class ComunidadControllerTest {
 
     @Autowired
     MockMvc mockMvc;

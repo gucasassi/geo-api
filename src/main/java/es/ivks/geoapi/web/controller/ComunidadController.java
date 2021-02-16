@@ -26,7 +26,7 @@ public class ComunidadController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getComunidadById(@PathVariable("id") Long id) throws ChangeSetPersister.NotFoundException {
+    public ResponseEntity<GeoApiResponse> getComunidadById(@PathVariable("id") Long id) throws ChangeSetPersister.NotFoundException {
 
         Comunidad comunidad = comunidadService.getComunidadById(id);
         GeoApiResponse apiResponse = GeoApiResponse.builder()
@@ -40,7 +40,7 @@ public class ComunidadController {
     }
 
     @PostMapping
-    public ResponseEntity saveComunidad(@Validated @RequestBody Comunidad comunidad){
+    public ResponseEntity<GeoApiResponse> saveComunidad(@Validated @RequestBody Comunidad comunidad){
 
         Comunidad savedComunidad = comunidadService.saveComunidad(comunidad);
 
@@ -52,7 +52,7 @@ public class ComunidadController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateComunidad(@PathVariable("id") Long id, @Validated @RequestBody Comunidad comunidad) throws ChangeSetPersister.NotFoundException {
+    public ResponseEntity<GeoApiResponse> updateComunidad(@PathVariable("id") Long id, @Validated @RequestBody Comunidad comunidad) throws ChangeSetPersister.NotFoundException {
 
         comunidadService.updateComunidad(id, comunidad);
         return new ResponseEntity(NO_CONTENT);
@@ -60,7 +60,7 @@ public class ComunidadController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteComunidad(@PathVariable("id") Long id) throws ChangeSetPersister.NotFoundException {
+    public ResponseEntity<GeoApiResponse> deleteComunidad(@PathVariable("id") Long id) throws ChangeSetPersister.NotFoundException {
 
         comunidadService.deleteComunidad(id);
         return new ResponseEntity(NO_CONTENT);
