@@ -44,7 +44,7 @@ public class ComunidadControllerTest {
         mockMvc.perform(
                 get(API_COMUNIDADES + 1L).accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk())
-                .andExpect(jsonPath("$.updatedDate").value(comunidad.getUpdated()))
+                .andExpect(jsonPath("$.updated_date").value(comunidad.getUpdated()))
                 .andExpect(jsonPath("$.size").value(1))
                 .andExpect(jsonPath("$.data").isNotEmpty())
                 .andExpect(jsonPath("$.data.id").value(comunidad.getId()))
@@ -55,7 +55,7 @@ public class ComunidadControllerTest {
     @Test
     void saveComunidad_WhenValidComunidad_ThenReturnIsCreated() throws Exception {
 
-        Comunidad comunidad = getValidComunidadObject();
+        Comunidad comunidad = Comunidad.builder().name("Euskadi").build();
         String comunidadJSON = objectMapper.writeValueAsString(comunidad);
 
         when(comunidadService.saveComunidad(comunidad)).thenReturn(comunidad);
@@ -70,7 +70,7 @@ public class ComunidadControllerTest {
     @Test
     void updateComunidad_WhenComunidadExist_ThenReturnIsNoContent() throws Exception {
 
-        Comunidad comunidad = getValidComunidadObject();
+        Comunidad comunidad = Comunidad.builder().name("CATALUNYA").build();
         String comunidadJSON = objectMapper.writeValueAsString(comunidad);
 
         doNothing().when(comunidadService).updateComunidad(1L, comunidad);
