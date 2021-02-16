@@ -25,7 +25,7 @@ public class ComunidadServiceImpl implements ComunidadService {
     @Override
     public Comunidad getComunidadById(Long id) throws NotFoundException {
 
-        log.info("Initializing getComunidadById with id value {}", id);
+        log.info("Initializing getComunidadById with id {}", id);
 
         return mapper.comunidadEntityToComunidad(
                 repository.findById(id).orElseThrow(NotFoundException::new)
@@ -36,7 +36,7 @@ public class ComunidadServiceImpl implements ComunidadService {
     @Override
     public Comunidad saveComunidad(Comunidad comunidad) {
 
-        log.info("Initializing saveComunidad {}", comunidad);
+        log.info("Initializing saveComunidad: {}", comunidad);
 
         ComunidadEntity comunidadEntity = mapper.comunidadToComunidadEntity(comunidad);
 

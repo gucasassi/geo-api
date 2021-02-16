@@ -6,6 +6,7 @@ import es.ivks.geoapi.web.response.GeoApiResponse;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.*;
@@ -39,7 +40,7 @@ public class ComunidadController {
     }
 
     @PostMapping
-    public ResponseEntity saveComunidad(@RequestBody Comunidad comunidad){
+    public ResponseEntity saveComunidad(@Validated @RequestBody Comunidad comunidad){
 
         Comunidad savedComunidad = comunidadService.saveComunidad(comunidad);
 
@@ -51,7 +52,7 @@ public class ComunidadController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateComunidad(@PathVariable("id") Long id, @RequestBody Comunidad comunidad) throws ChangeSetPersister.NotFoundException {
+    public ResponseEntity updateComunidad(@PathVariable("id") Long id, @Validated @RequestBody Comunidad comunidad) throws ChangeSetPersister.NotFoundException {
 
         comunidadService.updateComunidad(id, comunidad);
         return new ResponseEntity(NO_CONTENT);
